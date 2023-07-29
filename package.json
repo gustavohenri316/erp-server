@@ -9,7 +9,7 @@
   "scripts": {
     "dev": "nodemon src/server.ts",
     "start": "node dist/server.js",
-    "build": "tsc"
+    "build": "tsc --project tsconfig.json"
   },
   "keywords": [],
   "author": "",
