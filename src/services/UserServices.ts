@@ -148,3 +148,9 @@ export const findPermissionKeyByName = async (permissionName: string) => {
     key: permission.key,
   };
 };
+
+export const getAllUsers = async () => {
+  await dbConnection();
+  const users = await User.find();
+  return users;
+};

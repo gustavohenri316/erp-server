@@ -6,6 +6,7 @@ import userController from "./controllers/UserController";
 import forgotController from "./controllers/ForgotController";
 import permissionController from "./controllers/PermissionsController";
 import privilegesController from "./controllers/PrivilegesController";
+import notificationsController from "./controllers/NotificationsController";
 
 const app = express();
 const port = 3333;
@@ -20,6 +21,7 @@ app.use("/api/user", userController);
 app.use("/api/forgot", forgotController);
 app.use("/api/permission", permissionController);
 app.use("/api/privileges", privilegesController);
+app.use("/api/notifications", notificationsController);
 
 app.listen(port, () => {
   console.log(`App rodando em http://localhost:${port}`);

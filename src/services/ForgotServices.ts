@@ -1,6 +1,7 @@
 import dbConnection from "../utils/database";
 import Forgot, { IForgot } from "../models/ForgotModels";
 import User from "../models/UserModels";
+require("dotenv").config()
 
 import nodemailer from "nodemailer";
 

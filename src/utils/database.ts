@@ -1,7 +1,7 @@
 import mongoose from "mongoose"
 require("dotenv").config()
 
-const URI = 'mongodb+srv://gustavoholiver316:cWwx2NmoXkeQ2HPT@cluster0.t5wykgo.mongodb.net/?retryWrites=true&w=majority'
+const URI = process.env.MONGODB_URI
 
 let globalMongooseInstance: typeof mongoose | undefined
 
