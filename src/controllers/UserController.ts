@@ -131,7 +131,7 @@ router.post("/", async (req: Request, res: Response) => {
       req.body.photo = defaultPhotoURL;
     }
 
-    const user = await createUser(req.body);
+    await createUser(req.body);
     res.status(201).send({ message: "Usuário cadastrado com sucesso!" });
   } catch (error: any) {
     res.status(400).send(error);

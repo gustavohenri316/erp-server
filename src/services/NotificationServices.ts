@@ -1,8 +1,9 @@
 import dbConnection from "../utils/database";
 import Notification, { INotification } from "../models/NotificationsModel";
+import { Types } from "mongoose";
 
 export const createNotification = async (
-  receivedBy: string,
+  receivedBy: string[] | Types.ObjectId[],
   message: string,
   title: string,
   sentBy: string,
@@ -15,17 +16,30 @@ export const createNotification = async (
     title,
     sentBy,
     isGlobal,
-    isRead: false, 
+    isRead: false,
   });
   return notification;
 };
 
 export const getNotifications = async (userId: string) => {
   await dbConnection();
-  const notifications = await Notification.find({
-    $or: [{ receivedBy: userId }, { isGlobal: true }],
+
+  const directNotifications = await Notification.find({
+    receivedBy: userId,
+    isGlobal: false,
   });
-  return notifications;
+
+  const globalNotifications = await Notification.find({
+    _id: { $nin: directNotifications.map((n) => n._id) },
+    isGlobal: true,
+    excludedFor: { $ne: userId },
+    readBy: { $ne: userId },
+  });
+
+  return {
+    directNotifications,
+    globalNotifications,
+  };
 };
 
 export const deleteNotification = async (
@@ -34,33 +48,55 @@ export const deleteNotification = async (
 ) => {
   await dbConnection();
   const notification = await Notification.findById(notificationId);
+
   if (!notification) {
-    throw new Error("Notification not found.");
+    throw new Error("Notificação não encontrada.");
   }
-  if (!notification.isGlobal) {
-    if (String(notification.receivedBy) !== userId) {
-      throw new Error("You are not authorized to delete this notification.");
-    }
-  } else {
-    if (String(notification.sentBy) !== userId) {
-      throw new Error("You are not authorized to delete this notification.");
-    }
+
+  if (!notification.isGlobal && String(notification.receivedBy) !== userId) {
+    throw new Error("Você não tem permissão para excluir esta notificação.");
   }
+
+  if (notification.isGlobal && String(notification.sentBy) !== userId) {
+    throw new Error("Você não tem permissão para excluir esta notificação.");
+  }
+
   await Notification.findByIdAndDelete(notificationId);
 };
 
-
-export const markNotificationAsRead = async (notificationId: string, userId: string) => {
+export const markNotificationAsRead = async (
+  notificationId: string,
+  userId: Types.ObjectId
+) => {
   await dbConnection();
   const notification = await Notification.findById(notificationId);
 
   if (!notification) {
-    throw new Error("Notification not found.");
+    throw new Error("Notificação não encontrada.");
   }
 
-  // Verifica se a notificação pertence ao usuário antes de marcar como lida
-  if (notification.receivedBy.toString() !== userId) {
-    throw new Error("You are not authorized to mark this notification as read.");
+  const receivedByArray = Array.isArray(notification.receivedBy)
+    ? notification.receivedBy.map((id) => id.toString())
+    : [];
+
+  if (!receivedByArray.includes(userId.toString())) {
+    if (notification.isGlobal) {
+      if (
+        notification.excludedFor &&
+        notification.excludedFor.includes(userId)
+      ) {
+        throw new Error("Você já excluiu esta notificação global.");
+      }
+
+      if (notification.readBy && notification.readBy.includes(userId)) {
+        throw new Error("Você já marcou esta notificação global como lida.");
+      }
+      notification.readBy = [...(notification.readBy || []), userId];
+    } else {
+      throw new Error(
+        "Você não tem permissão para marcar esta notificação como lida."
+      );
+    }
   }
 
   notification.isRead = true;
@@ -71,6 +107,11 @@ export const markNotificationAsRead = async (notificationId: string, userId: str
 
 export const countUnreadNotifications = async (userId: string) => {
   await dbConnection();
-  const count = await Notification.countDocuments({ receivedBy: userId, isRead: false });
+  const count = await Notification.countDocuments({
+    $or: [
+      { receivedBy: { $in: [userId] }, isRead: false },
+      { isGlobal: true, excludedFor: { $ne: userId }, isRead: false },
+    ],
+  });
   return count;
 };
