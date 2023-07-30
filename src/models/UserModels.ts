@@ -1,4 +1,4 @@
-import { Schema, models, model } from "mongoose"
+import { Schema, models, model } from "mongoose";
 
 const UserSchema = new Schema({
   firstName: { type: String, required: true },
@@ -27,6 +27,6 @@ const UserSchema = new Schema({
   password: { type: String, required: true },
   team: { type: String, required: true },
   privileges: [{ type: Schema.Types.ObjectId, ref: "Privileges" }],
-})
+});
 
-export default models.User || model("User", UserSchema)
+export default models.User || model("User", UserSchema);

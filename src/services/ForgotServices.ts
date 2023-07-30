@@ -1,7 +1,5 @@
-import dbConnection from "../utils/database";
 import Forgot, { IForgot } from "../models/ForgotModels";
 import User from "../models/UserModels";
-require("dotenv").config()
 
 import nodemailer from "nodemailer";
 
@@ -13,7 +11,6 @@ const generateRandomCode = (): string => {
 export const createForgot = async (forgotData: {
   email: string;
 }): Promise<IForgot> => {
-  await dbConnection();
   const existingForgot = await Forgot.findOne({ email: forgotData.email });
 
   if (existingForgot) {
@@ -80,7 +77,6 @@ export const getForgotUserId = async (
   email: string,
   code: string
 ): Promise<string | null> => {
-  await dbConnection();
   const foundForgot = await Forgot.findOne({ email, code });
 
   if (!foundForgot) {

@@ -1,4 +1,3 @@
-import dbConnection from "../utils/database";
 import User from "../models/UserModels";
 import Privileges from "../models/PrivilegesModels";
 import Permission from "../models/PermissionsModel";
@@ -7,19 +6,16 @@ export const findUserByEmailAndPassword = async (
   email: string,
   password: string
 ) => {
-  await dbConnection();
   const user = await User.findOne({ email, password });
   return user;
 };
 
 export const updateUserPassword = async (id: string, newPassword: string) => {
-  await dbConnection();
   await User.findByIdAndUpdate(id, { password: newPassword });
 };
 
 export const listUsers = async (page: number = 1, pageSize: number = 10) => {
   try {
-    await dbConnection();
     const totalItems = await User.countDocuments();
     const users = await User.find()
       .populate("privileges")
@@ -43,7 +39,6 @@ export const listUsers = async (page: number = 1, pageSize: number = 10) => {
 };
 
 export const createUser = async (user: any) => {
-  await dbConnection();
   if (user.privileges) {
     const privileges = await Privileges.find({ _id: { $in: user.privileges } });
 
@@ -57,12 +52,10 @@ export const createUser = async (user: any) => {
 };
 
 export const deleteUser = async (id: string) => {
-  await dbConnection();
   await User.findByIdAndDelete(id);
 };
 
 export const updateUser = async (id: string, newBody: any) => {
-  await dbConnection();
   if (newBody.privileges) {
     const privileges = await Privileges.find({
       _id: { $in: newBody.privileges },
@@ -77,21 +70,17 @@ export const updateUser = async (id: string, newBody: any) => {
 };
 
 export const findUserById = async (id: string) => {
-  await dbConnection();
   const user = await User.findById(id).populate("privileges");
   return user;
 };
 
 export const findUserByName = async (name: string) => {
-  await dbConnection();
   const regex = new RegExp(`.*${name}.*`, "i");
   const user = await User.find({ name: regex });
   return user;
 };
 
 export const getUserPrivilegeAndPermissions = async (userId: string) => {
-  await dbConnection();
-
   const user = await User.findById(userId).populate("privileges");
   if (!user) {
     return {
@@ -133,7 +122,6 @@ export const getUserPrivilegeAndPermissions = async (userId: string) => {
 };
 
 export const findPermissionKeyByName = async (permissionName: string) => {
-  await dbConnection();
   const permission = await Permission.findOne({ name: permissionName });
 
   if (!permission) {
@@ -150,7 +138,6 @@ export const findPermissionKeyByName = async (permissionName: string) => {
 };
 
 export const getAllUsers = async () => {
-  await dbConnection();
   const users = await User.find();
   return users;
 };

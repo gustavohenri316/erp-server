@@ -32,7 +32,7 @@ router.post("/", async (req: Request, res: Response) => {
       sentBy,
       isGlobal
     );
-    res.status(201).send(notification);
+    res.status(201).send({ message: "Notificação envida com sucesso!" });
   } catch (error: any) {
     res.status(400).send({ message: error.message });
   }

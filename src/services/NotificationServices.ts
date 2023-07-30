@@ -1,4 +1,3 @@
-import dbConnection from "../utils/database";
 import Notification, { INotification } from "../models/NotificationsModel";
 import { Types } from "mongoose";
 
@@ -9,7 +8,6 @@ export const createNotification = async (
   sentBy: string,
   isGlobal: boolean
 ) => {
-  await dbConnection();
   const notification: INotification = await Notification.create({
     receivedBy,
     message,
@@ -22,8 +20,6 @@ export const createNotification = async (
 };
 
 export const getNotifications = async (userId: string) => {
-  await dbConnection();
-
   const directNotifications = await Notification.find({
     receivedBy: userId,
     isGlobal: false,
@@ -46,7 +42,6 @@ export const deleteNotification = async (
   notificationId: string,
   userId: string
 ) => {
-  await dbConnection();
   const notification = await Notification.findById(notificationId);
 
   if (!notification) {
@@ -68,7 +63,6 @@ export const markNotificationAsRead = async (
   notificationId: string,
   userId: Types.ObjectId
 ) => {
-  await dbConnection();
   const notification = await Notification.findById(notificationId);
 
   if (!notification) {
@@ -106,7 +100,6 @@ export const markNotificationAsRead = async (
 };
 
 export const countUnreadNotifications = async (userId: string) => {
-  await dbConnection();
   const count = await Notification.countDocuments({
     $or: [
       { receivedBy: { $in: [userId] }, isRead: false },

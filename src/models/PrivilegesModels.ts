@@ -20,6 +20,9 @@ const PrivilegesSchema = new Schema<IPrivileges>({
   permissions: [{ type: Schema.Types.ObjectId, ref: "Permission" }],
 });
 
-const Privileges: Model<IPrivilegesDocument> = model<IPrivilegesDocument>("Privileges", PrivilegesSchema);
+const Privileges: Model<IPrivilegesDocument> = model<IPrivilegesDocument>(
+  "Privileges",
+  PrivilegesSchema
+);
 
 export default Privileges;

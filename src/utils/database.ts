@@ -1,19 +1,25 @@
-import mongoose from "mongoose"
-require("dotenv").config()
+import mongoose from "mongoose";
+import { config } from "dotenv";
 
-const URI = process.env.MONGODB_URI
+config();
 
-let globalMongooseInstance: typeof mongoose | undefined
+const url = process.env.MONGODB_URI;
 
-const dbConnection = async () => {
+let globalMongooseInstance: typeof mongoose | undefined;
+
+export const dbConnection = async () => {
   if (!globalMongooseInstance) {
-    mongoose.set("strictQuery", false)
-    if (URI) {
-      globalMongooseInstance = await mongoose.connect(URI as string)
+    mongoose.set("strictQuery", false);
+    if (url) {
+      try {
+        globalMongooseInstance = await mongoose.connect(url as string);
+        console.log("Connected to Mongoose");
+      } catch (error: any) {
+        console.error("Error connecting to Mongoose:", error.message);
+        throw error;
+      }
     } else {
-      throw new Error("MONGODB_URI environment variable is not set.")
+      throw new Error("MONGODB_URI environment variable is not set.");
     }
   }
-}
-
-export default dbConnection
+};
