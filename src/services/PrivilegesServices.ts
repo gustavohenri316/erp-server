@@ -4,29 +4,28 @@ import Privileges, {
 } from "../models/PrivilegesModels";
 import Permission from "../models/PermissionsModel";
 import { Schema } from "mongoose";
-
+// Função para criar um novo privilégio
 export const createPrivilege = async (
   privilegeData: IPrivileges
 ): Promise<IPrivilegesDocument> => {
   const { permissions } = privilegeData;
-
+  // Verifica se todas as permissões fornecidas existem
   const existingPermissions = await Permission.find({
     _id: { $in: permissions },
   });
-
   if (existingPermissions.length !== permissions.length) {
     throw new Error("One or more provided permission IDs do not exist.");
   }
-
+  // Cria o novo privilégio
   const newPrivilege = await Privileges.create(privilegeData);
   return newPrivilege;
 };
-
+// Função para listar todos os privilégios existentes
 export const listPrivileges = async (): Promise<IPrivilegesDocument[]> => {
   const privileges = await Privileges.find().populate("permissions");
   return privileges;
 };
-
+// Função para atualizar um privilégio por ID
 export const updatePrivilege = async (
   id: Schema.Types.ObjectId,
   privilegeData: IPrivileges
@@ -38,13 +37,13 @@ export const updatePrivilege = async (
   );
   return updatedPrivilege;
 };
-
+// Função para excluir um privilégio por ID
 export const deletePrivilege = async (
   id: Schema.Types.ObjectId
 ): Promise<void> => {
   await Privileges.findByIdAndDelete(id);
 };
-
+// Função para obter um privilégio por ID
 export const getPrivilegeById = async (
   id: Schema.Types.ObjectId
 ): Promise<IPrivilegesDocument | null> => {

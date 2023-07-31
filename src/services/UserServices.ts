@@ -1,7 +1,7 @@
 import User from "../models/UserModels";
 import Privileges from "../models/PrivilegesModels";
 import Permission from "../models/PermissionsModel";
-
+// Função para encontrar um usuário por email e senha
 export const findUserByEmailAndPassword = async (
   email: string,
   password: string
@@ -9,11 +9,11 @@ export const findUserByEmailAndPassword = async (
   const user = await User.findOne({ email, password });
   return user;
 };
-
+// Função para atualizar a senha de um usuário
 export const updateUserPassword = async (id: string, newPassword: string) => {
   await User.findByIdAndUpdate(id, { password: newPassword });
 };
-
+// Função para listar os usuários paginados
 export const listUsers = async (page: number = 1, pageSize: number = 10) => {
   try {
     const totalItems = await User.countDocuments();
@@ -21,12 +21,29 @@ export const listUsers = async (page: number = 1, pageSize: number = 10) => {
       .populate("privileges")
       .skip((page - 1) * pageSize)
       .limit(pageSize);
-
+    // Remove a senha dos usuários antes de retornar a lista
     const usersWithoutPassword = users.map((user) => {
-      const { password, ...userWithoutPassword } = user.toObject();
-      return userWithoutPassword;
+      const {
+        photo,
+        firstName,
+        lastName,
+        email,
+        privileges,
+        phoneNumber,
+        team,
+        _id,
+      } = user.toObject();
+      return {
+        photo,
+        firstName,
+        lastName,
+        email,
+        privileges,
+        phoneNumber,
+        team,
+        _id,
+      };
     });
-
     return {
       totalItems,
       currentPage: page,
@@ -37,7 +54,7 @@ export const listUsers = async (page: number = 1, pageSize: number = 10) => {
     throw error;
   }
 };
-
+// Função para criar um novo usuário
 export const createUser = async (user: any) => {
   if (user.privileges) {
     const privileges = await Privileges.find({ _id: { $in: user.privileges } });
@@ -46,15 +63,14 @@ export const createUser = async (user: any) => {
       throw new Error("One or more provided privilege IDs do not exist.");
     }
   }
-
   const createdUser = await User.create(user);
   return createdUser;
 };
-
+// Função para excluir um usuário por ID
 export const deleteUser = async (id: string) => {
   await User.findByIdAndDelete(id);
 };
-
+// Função para atualizar um usuário por ID
 export const updateUser = async (id: string, newBody: any) => {
   if (newBody.privileges) {
     const privileges = await Privileges.find({
@@ -65,21 +81,20 @@ export const updateUser = async (id: string, newBody: any) => {
       throw new Error("One or more provided privilege IDs do not exist.");
     }
   }
-
   await User.findByIdAndUpdate(id, newBody);
 };
-
+// Função para encontrar um usuário por ID
 export const findUserById = async (id: string) => {
   const user = await User.findById(id).populate("privileges");
   return user;
 };
-
+// Função para encontrar usuários pelo nome (realiza busca com expressão regular)
 export const findUserByName = async (name: string) => {
   const regex = new RegExp(`.*${name}.*`, "i");
   const user = await User.find({ name: regex });
   return user;
 };
-
+// Função para obter o privilégio e as permissões associadas a um usuário
 export const getUserPrivilegeAndPermissions = async (userId: string) => {
   const user = await User.findById(userId).populate("privileges");
   if (!user) {
@@ -88,7 +103,6 @@ export const getUserPrivilegeAndPermissions = async (userId: string) => {
       message: "User not found.",
     };
   }
-
   const privilegeId = user.privileges[0];
   const privilege = await Privileges.findById(privilegeId).populate(
     "permissions"
@@ -99,13 +113,11 @@ export const getUserPrivilegeAndPermissions = async (userId: string) => {
       message: "Privilege not found.",
     };
   }
-
   const userPrivilege = {
     id: privilege._id,
     name: privilege.name,
     key: privilege.key,
   };
-
   const permissionsAssociated = privilege.permissions.map(
     (permission: any) => ({
       id: permission._id,
@@ -113,17 +125,15 @@ export const getUserPrivilegeAndPermissions = async (userId: string) => {
       key: permission.key,
     })
   );
-
   return {
     success: true,
     userPrivilege,
     permissionsAssociated,
   };
 };
-
+// Função para encontrar a chave de permissão pelo nome da permissão
 export const findPermissionKeyByName = async (permissionName: string) => {
   const permission = await Permission.findOne({ name: permissionName });
-
   if (!permission) {
     return {
       success: false,
@@ -136,7 +146,7 @@ export const findPermissionKeyByName = async (permissionName: string) => {
     key: permission.key,
   };
 };
-
+// Função para obter todos os usuários no sistema
 export const getAllUsers = async () => {
   const users = await User.find();
   return users;
