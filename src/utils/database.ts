@@ -11,7 +11,6 @@ export const dbConnection = async () => {
     if (url) {
       try {
         globalMongooseInstance = await mongoose.connect(url as string)
-        console.log("Connected to Mongoose")
       } catch (error: any) {
         console.error("Error connecting to Mongoose:", error.message)
         throw error

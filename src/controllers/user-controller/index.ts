@@ -115,14 +115,31 @@ export async function searchUsers(req: Request, res: Response) {
 
 export async function createUserController(req: Request, res: Response) {
   try {
-    if (!req.body.photo) {
-      req.body.photo = defaultPhotoURL
+    const userData = req.body
+
+    if (!userData.corporateEmail) {
+      return res
+        .status(400)
+        .send({ message: "E-mail corporativo é obrigatório." })
     }
 
-    await UserService.createUser(req.body)
+    if (!userData.username) {
+      return res.status(400).send({ message: "Nome de usuário é obrigatório." })
+    }
+
+    if (!userData.password) {
+      return res.status(400).send({ message: "Senha é obrigatória." })
+    }
+
+    if (!userData.photo) {
+      userData.photo = defaultPhotoURL
+    }
+
+    await UserService.createUser(userData)
+
     res.status(201).send({ message: "Usuário cadastrado com sucesso!" })
   } catch (error: any) {
-    res.status(400).send(error)
+    res.status(400).send({ message: error.message })
   }
 }
 

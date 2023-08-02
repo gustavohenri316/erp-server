@@ -136,3 +136,8 @@ export const getAllUsers = async () => {
   const users = await User.find()
   return users
 }
+
+export const findUserByEmail = async (email: string) => {
+  const user = await User.findOne({ email })
+  return user
+}

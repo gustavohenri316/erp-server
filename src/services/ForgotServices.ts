@@ -31,7 +31,6 @@ export const createForgot = async (forgotData: {
   setTimeout(async () => {
     try {
       await Forgot.deleteOne({ _id: createdForgot._id })
-      console.log("Registro de esquecimento excluído", createdForgot._id)
     } catch (error) {
       console.error("Erro ao excluir o registro de esquecimento:", error)
     }
@@ -50,7 +49,6 @@ export const createForgot = async (forgotData: {
 }
 
 const sendCodeByEmail = async (email: string, code: string) => {
-  console.log("Tentando enviar o e-mail...")
   const transporter = nodemailer.createTransport({
     service: "Outlook",
     auth: {
