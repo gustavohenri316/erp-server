@@ -14,11 +14,11 @@ export async function loginUser(req: Request, res: Response) {
 
     const user = await UserService.findUserByEmailAndPassword(email, password)
     const privileges: any = await UserService.getUserPrivilegeAndPermissions(
-      user._id,
+      user._id
     )
 
     const permissions = privileges.permissionsAssociated.map(
-      (permission: any) => permission.key,
+      (permission: any) => permission.key
     )
 
     if (!user) {
@@ -63,7 +63,7 @@ export async function getUserProfile(req: Request, res: Response) {
 
 export async function updateUserPasswordController(
   req: Request,
-  res: Response,
+  res: Response
 ) {
   try {
     const { userId } = req.params
@@ -171,7 +171,7 @@ export async function getUserPrivileges(req: Request, res: Response) {
     const permissionsArray = result.permissionsAssociated.map(
       (permission: any) => ({
         key: permission.key,
-      }),
+      })
     )
 
     res.status(200).json(permissionsArray)
@@ -191,7 +191,7 @@ export async function getUserPermissionKey(req: Request, res: Response) {
     }
 
     const foundPermission = result.permissionsAssociated.find(
-      (permission: any) => permission.name === permissionName,
+      (permission: any) => permission.name === permissionName
     )
 
     if (!foundPermission) {
@@ -201,7 +201,7 @@ export async function getUserPermissionKey(req: Request, res: Response) {
     }
 
     const permissionKeyResult = await UserService.findPermissionKeyByName(
-      permissionName as string,
+      permissionName as string
     )
 
     if (!permissionKeyResult.success) {

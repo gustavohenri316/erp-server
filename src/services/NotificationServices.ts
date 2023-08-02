@@ -1,12 +1,11 @@
 import Notification, { INotification } from "../models/NotificationsModel"
 import { Types } from "mongoose"
-
 export const createNotification = async (
   receivedBy: string[] | Types.ObjectId[],
   message: string,
   title: string,
   sentBy: string,
-  isGlobal: boolean,
+  isGlobal: boolean
 ): Promise<INotification> => {
   const notification: INotification = await Notification.create({
     receivedBy,
@@ -18,11 +17,10 @@ export const createNotification = async (
   })
   return notification
 }
-
 export const getNotifications = async (
   userId: string,
   page: number,
-  perPage: number,
+  perPage: number
 ) => {
   const skip = (page - 1) * perPage
 
@@ -71,11 +69,10 @@ export const getNotifications = async (
     directNotificationsCount,
   }
 }
-
 export const getSentNotifications = async (
   userId: string,
   page: number,
-  perPage: number,
+  perPage: number
 ) => {
   const skip = (page - 1) * perPage
 
@@ -87,10 +84,9 @@ export const getSentNotifications = async (
 
   return sentNotifications
 }
-
 export const deleteNotification = async (
   notificationId: string,
-  userId: string,
+  userId: string
 ) => {
   const notification = await Notification.findById(notificationId)
   if (!notification) {
@@ -104,7 +100,7 @@ export const deleteNotification = async (
 
 export const markNotificationAsRead = async (
   notificationId: string,
-  userId: Types.ObjectId,
+  userId: Types.ObjectId
 ) => {
   const notification = await Notification.findById(notificationId)
   if (!notification) {
@@ -127,7 +123,7 @@ export const markNotificationAsRead = async (
       notification.readBy = [...(notification.readBy || []), userId]
     } else {
       throw new Error(
-        "Você não tem permissão para marcar esta notificação como lida.",
+        "Você não tem permissão para marcar esta notificação como lida."
       )
     }
   }
@@ -135,7 +131,6 @@ export const markNotificationAsRead = async (
   await notification.save()
   return notification
 }
-
 export const countUnreadNotifications = async (userId: string) => {
   const directNotificationsCount = await Notification.countDocuments({
     receivedBy: { $in: [userId] },

@@ -27,7 +27,7 @@ export async function updatePrivilege(req: Request, res: Response) {
     const id: any = req.params.id
     const updatedPrivilege = await PrivilegesServices.updatePrivilege(
       id,
-      req.body,
+      req.body
     )
     res.status(200).json(updatedPrivilege)
   } catch (error: any) {

@@ -1,7 +1,6 @@
 import User from "../models/UserModels"
 import Privileges from "../models/PrivilegesModels"
 import Permission from "../models/PermissionsModel"
-
 export const findUserByEmailAndPassword = async (
   email: string,
   password: string
@@ -9,11 +8,9 @@ export const findUserByEmailAndPassword = async (
   const user = await User.findOne({ email, password })
   return user
 }
-
 export const updateUserPassword = async (id: string, newPassword: string) => {
   await User.findByIdAndUpdate(id, { password: newPassword })
 }
-
 export const listUsers = async (page: number = 1, pageSize: number = 10) => {
   const totalItems = await User.countDocuments()
   const users = await User.find()
@@ -51,7 +48,6 @@ export const listUsers = async (page: number = 1, pageSize: number = 10) => {
     users: usersWithoutPassword,
   }
 }
-
 export const createUser = async (user: any) => {
   if (user.privileges) {
     const privileges = await Privileges.find({ _id: { $in: user.privileges } })
@@ -63,11 +59,9 @@ export const createUser = async (user: any) => {
   const createdUser = await User.create(user)
   return createdUser
 }
-
 export const deleteUser = async (id: string) => {
   await User.findByIdAndDelete(id)
 }
-
 export const updateUser = async (id: string, newBody: any) => {
   if (newBody.privileges) {
     const privileges = await Privileges.find({
@@ -80,18 +74,15 @@ export const updateUser = async (id: string, newBody: any) => {
   }
   await User.findByIdAndUpdate(id, newBody)
 }
-
 export const findUserById = async (id: string) => {
   const user = await User.findById(id).populate("privileges")
   return user
 }
-
 export const findUserByName = async (name: string) => {
   const regex = new RegExp(`.*${name}.*`, "i")
   const user = await User.find({ name: regex })
   return user
 }
-
 export const getUserPrivilegeAndPermissions = async (userId: string) => {
   const user = await User.findById(userId).populate("privileges")
   if (!user) {
@@ -128,7 +119,6 @@ export const getUserPrivilegeAndPermissions = async (userId: string) => {
     permissionsAssociated,
   }
 }
-
 export const findPermissionKeyByName = async (permissionName: string) => {
   const permission = await Permission.findOne({ name: permissionName })
   if (!permission) {
@@ -137,13 +127,11 @@ export const findPermissionKeyByName = async (permissionName: string) => {
       message: "Permission not found.",
     }
   }
-
   return {
     success: true,
     key: permission.key,
   }
 }
-
 export const getAllUsers = async () => {
   const users = await User.find()
   return users

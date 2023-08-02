@@ -4,9 +4,7 @@ import { config } from "dotenv"
 config()
 
 const url = process.env.MONGODB_URI
-
 let globalMongooseInstance: typeof mongoose | undefined
-
 export const dbConnection = async () => {
   if (!globalMongooseInstance) {
     mongoose.set("strictQuery", false)

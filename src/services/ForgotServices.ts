@@ -69,7 +69,7 @@ const sendCodeByEmail = async (email: string, code: string) => {
 
 export const getForgotUserId = async (
   email: string,
-  code: string,
+  code: string
 ): Promise<string | null> => {
   const foundForgot = await Forgot.findOne({ email, code })
   if (!foundForgot) {

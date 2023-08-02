@@ -1,5 +1,4 @@
 import Permission from "../models/PermissionsModel"
-
 export const createPermission = async (PermissionData: any) => {
   const existingPermissionWithName = await Permission.findOne({
     name: PermissionData.name,
@@ -30,7 +29,6 @@ export const createPermission = async (PermissionData: any) => {
     }
   }
 }
-
 export const deletePermissionById = async (PermissionId: string) => {
   try {
     await Permission.findByIdAndDelete(PermissionId)
@@ -38,7 +36,6 @@ export const deletePermissionById = async (PermissionId: string) => {
     throw new Error("Erro ao excluir a regra. Verifique o ID da regra.")
   }
 }
-
 export const listPermissions = async () => {
   try {
     const Permissions = await Permission.find()
@@ -47,7 +44,6 @@ export const listPermissions = async () => {
     throw new Error("Erro ao listar as regras.")
   }
 }
-
 export const searchPermissions = async (searchInput: string) => {
   try {
     const query = {

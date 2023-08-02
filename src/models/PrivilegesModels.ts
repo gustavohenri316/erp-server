@@ -22,7 +22,7 @@ const PrivilegesSchema = new Schema<IPrivileges>({
 
 const Privileges: Model<IPrivilegesDocument> = model<IPrivilegesDocument>(
   "Privileges",
-  PrivilegesSchema,
+  PrivilegesSchema
 )
 
 export default Privileges

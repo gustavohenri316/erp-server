@@ -29,7 +29,7 @@ export async function createPermissionController(req: Request, res: Response) {
 // Rota para excluir uma permissão por ID
 export async function deletePermissionByIdController(
   req: Request,
-  res: Response,
+  res: Response
 ) {
   try {
     const { permissionId } = req.params
@@ -105,7 +105,7 @@ export async function searchPermissionsController(req: Request, res: Response) {
 // Rota para pesquisar uma permissão pelo nome
 export async function searchPermissionByNameController(
   req: Request,
-  res: Response,
+  res: Response
 ) {
   try {
     const searchTerm: string = req.query.name as string
@@ -120,7 +120,7 @@ export async function searchPermissionByNameController(
 
     const permissions = await Permission.find(
       { name: { $regex: searchTerm, $options: "i" } },
-      { key: 1, _id: 0 },
+      { key: 1, _id: 0 }
     )
     if (permissions.length === 0) {
       res.status(404).send({
