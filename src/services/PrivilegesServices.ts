@@ -1,55 +1,55 @@
 import Privileges, {
   IPrivileges,
   IPrivilegesDocument,
-} from "../models/PrivilegesModels";
-import Permission from "../models/PermissionsModel";
-import { Schema } from "mongoose";
-// Função para criar um novo privilégio
+} from "../models/PrivilegesModels"
+import Permission from "../models/PermissionsModel"
+import { Schema } from "mongoose"
+
 export const createPrivilege = async (
-  privilegeData: IPrivileges
+  privilegeData: IPrivileges,
 ): Promise<IPrivilegesDocument> => {
-  const { permissions } = privilegeData;
-  // Verifica se todas as permissões fornecidas existem
+  const { permissions } = privilegeData
+
   const existingPermissions = await Permission.find({
     _id: { $in: permissions },
-  });
+  })
   if (existingPermissions.length !== permissions.length) {
-    throw new Error("One or more provided permission IDs do not exist.");
+    throw new Error("One or more provided permission IDs do not exist.")
   }
-  // Cria o novo privilégio
-  const newPrivilege = await Privileges.create(privilegeData);
-  return newPrivilege;
-};
-// Função para listar todos os privilégios existentes
+
+  const newPrivilege = await Privileges.create(privilegeData)
+  return newPrivilege
+}
+
 export const listPrivileges = async (): Promise<IPrivilegesDocument[]> => {
-  const privileges = await Privileges.find().populate("permissions");
-  return privileges;
-};
-// Função para atualizar um privilégio por ID
+  const privileges = await Privileges.find().populate("permissions")
+  return privileges
+}
+
 export const updatePrivilege = async (
   id: Schema.Types.ObjectId,
-  privilegeData: IPrivileges
+  privilegeData: IPrivileges,
 ): Promise<IPrivilegesDocument | null> => {
   const updatedPrivilege = await Privileges.findByIdAndUpdate(
     id,
     privilegeData,
-    { new: true }
-  );
-  return updatedPrivilege;
-};
-// Função para excluir um privilégio por ID
+    { new: true },
+  )
+  return updatedPrivilege
+}
+
 export const deletePrivilege = async (
-  id: Schema.Types.ObjectId
+  id: Schema.Types.ObjectId,
 ): Promise<void> => {
-  await Privileges.findByIdAndDelete(id);
-};
-// Função para obter um privilégio por ID
+  await Privileges.findByIdAndDelete(id)
+}
+
 export const getPrivilegeById = async (
-  id: Schema.Types.ObjectId
+  id: Schema.Types.ObjectId,
 ): Promise<IPrivilegesDocument | null> => {
-  const privilege = await Privileges.findById(id).populate("permissions");
+  const privilege = await Privileges.findById(id).populate("permissions")
   if (!privilege) {
-    throw new Error("Privilege not found.");
+    throw new Error("Privilege not found.")
   }
-  return privilege;
-};
+  return privilege
+}

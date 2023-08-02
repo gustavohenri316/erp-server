@@ -1,13 +1,12 @@
-import Notification, { INotification } from "../models/NotificationsModel";
-import { Types } from "mongoose";
+import Notification, { INotification } from "../models/NotificationsModel"
+import { Types } from "mongoose"
 
-// Função para criar uma nova notificação
 export const createNotification = async (
   receivedBy: string[] | Types.ObjectId[],
   message: string,
   title: string,
   sentBy: string,
-  isGlobal: boolean
+  isGlobal: boolean,
 ): Promise<INotification> => {
   const notification: INotification = await Notification.create({
     receivedBy,
@@ -16,98 +15,142 @@ export const createNotification = async (
     sentBy,
     isGlobal,
     isRead: false,
-  });
-  return notification;
-};
-// Função para obter as notificações diretas e globais de um usuário
-export const getNotifications = async (userId: string) => {
-  const directNotifications = await Notification.find({
+  })
+  return notification
+}
+
+export const getNotifications = async (
+  userId: string,
+  page: number,
+  perPage: number,
+) => {
+  const skip = (page - 1) * perPage
+
+  const directNotificationsQuery = Notification.find({
     receivedBy: { $in: [userId] },
     isGlobal: false,
-  });
-  const globalNotifications = await Notification.find({
+  })
+    .sort({ createdAt: -1 })
+    .skip(skip)
+    .limit(perPage)
+    .lean()
+
+  const directNotifications = await directNotificationsQuery
+
+  const globalNotificationsQuery = Notification.find({
     _id: { $nin: directNotifications.map((n) => n._id) },
     isGlobal: true,
     excludedFor: { $ne: userId },
     readBy: { $ne: userId },
-  });
+  })
+    .sort({ createdAt: -1 })
+    .skip(skip)
+    .limit(perPage)
+    .lean()
+
+  const globalNotifications = await globalNotificationsQuery
+
+  const directNotificationsCount = await Notification.countDocuments({
+    receivedBy: { $in: [userId] },
+    isGlobal: false,
+  })
+
+  const globalNotificationsCount = await Notification.countDocuments({
+    _id: {
+      $nin: directNotifications.map((n) => n._id),
+    },
+    isGlobal: true,
+    excludedFor: { $ne: userId },
+    readBy: { $ne: userId },
+  })
+
   return {
     directNotifications,
     globalNotifications,
-  };
-};
-// Função para obter as notificações enviadas por um usuário
-export const getSentNotifications = async (userId: string) => {
+    globalNotificationsCount,
+    directNotificationsCount,
+  }
+}
+
+export const getSentNotifications = async (
+  userId: string,
+  page: number,
+  perPage: number,
+) => {
+  const skip = (page - 1) * perPage
+
   const sentNotifications = await Notification.find({
     sentBy: userId,
-  });
-  return sentNotifications;
-};
-// Função para excluir uma notificação
+  })
+    .skip(skip)
+    .limit(perPage)
+
+  return sentNotifications
+}
+
 export const deleteNotification = async (
   notificationId: string,
-  userId: string
+  userId: string,
 ) => {
-  const notification = await Notification.findById(notificationId);
+  const notification = await Notification.findById(notificationId)
   if (!notification) {
-    throw new Error("Notificação não encontrada.");
+    throw new Error("Notificação não encontrada.")
   }
   if (String(notification.sentBy) !== userId) {
-    throw new Error("Você não tem permissão para excluir esta notificação.");
+    throw new Error("Você não tem permissão para excluir esta notificação.")
   }
-  await Notification.findByIdAndDelete(notificationId);
-};
+  await Notification.findByIdAndDelete(notificationId)
+}
 
-// Função para marcar uma notificação como lida
 export const markNotificationAsRead = async (
   notificationId: string,
-  userId: Types.ObjectId
+  userId: Types.ObjectId,
 ) => {
-  const notification = await Notification.findById(notificationId);
+  const notification = await Notification.findById(notificationId)
   if (!notification) {
-    throw new Error("Notificação não encontrada.");
+    throw new Error("Notificação não encontrada.")
   }
   const receivedByArray = Array.isArray(notification.receivedBy)
     ? notification.receivedBy.map((id) => id.toString())
-    : [];
+    : []
   if (!receivedByArray.includes(userId.toString())) {
     if (notification.isGlobal) {
       if (
         notification.excludedFor &&
         notification.excludedFor.includes(userId)
       ) {
-        throw new Error("Você já excluiu esta notificação global.");
+        throw new Error("Você já excluiu esta notificação global.")
       }
       if (notification.readBy && notification.readBy.includes(userId)) {
-        throw new Error("Você já marcou esta notificação global como lida.");
+        throw new Error("Você já marcou esta notificação global como lida.")
       }
-      notification.readBy = [...(notification.readBy || []), userId];
+      notification.readBy = [...(notification.readBy || []), userId]
     } else {
       throw new Error(
-        "Você não tem permissão para marcar esta notificação como lida."
-      );
+        "Você não tem permissão para marcar esta notificação como lida.",
+      )
     }
   }
-  notification.isRead = true;
-  await notification.save();
-  return notification;
-};
+  notification.isRead = true
+  await notification.save()
+  return notification
+}
 
 export const countUnreadNotifications = async (userId: string) => {
   const directNotificationsCount = await Notification.countDocuments({
     receivedBy: { $in: [userId] },
     isGlobal: false,
     isRead: false,
-  });
+  })
 
   const globalNotificationsCount = await Notification.countDocuments({
     isGlobal: true,
     excludedFor: { $ne: userId },
     readBy: { $ne: userId },
     isRead: false,
-  });
+  })
 
   const totalUnreadNotifications =
-    directNotificationsCount + globalNotificationsCount;
-  return totalUnreadNotifications;
-};
+    directNotificationsCount + globalNotificationsCount
+  return totalUnreadNotifications
+}

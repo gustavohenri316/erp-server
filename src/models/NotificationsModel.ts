@@ -1,16 +1,16 @@
-import mongoose, { Document, Schema } from "mongoose";
+import mongoose, { Document, Schema } from "mongoose"
 
 export interface INotification extends Document {
-  receivedBy: mongoose.Types.ObjectId[] | string[];
-  message: string;
-  title: string;
-  sentBy: mongoose.Types.ObjectId;
-  timestamp: Date;
-  createdAt: Date;
-  isRead: boolean;
-  isGlobal: boolean;
-  excludedFor?: mongoose.Types.ObjectId[];
-  readBy?: mongoose.Types.ObjectId[];
+  receivedBy: mongoose.Types.ObjectId[] | string[]
+  message: string
+  title: string
+  sentBy: mongoose.Types.ObjectId
+  timestamp: Date
+  createdAt: Date
+  isRead: boolean
+  isGlobal: boolean
+  excludedFor?: mongoose.Types.ObjectId[]
+  readBy?: mongoose.Types.ObjectId[]
 }
 
 const notificationSchema = new Schema<INotification>({
@@ -24,11 +24,11 @@ const notificationSchema = new Schema<INotification>({
   isGlobal: { type: Boolean, default: false },
   excludedFor: [{ type: mongoose.Schema.Types.ObjectId, ref: "User" }],
   readBy: [{ type: mongoose.Schema.Types.ObjectId, ref: "User" }],
-});
+})
 
 const Notification = mongoose.model<INotification>(
   "Notification",
-  notificationSchema
-);
+  notificationSchema,
+)
 
-export default Notification;
+export default Notification

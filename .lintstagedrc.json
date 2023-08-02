@@ -1,0 +1,5 @@
+{
+  "*.ts": [
+    "yarn eslint 'src/**' --fix"
+  ]
+}

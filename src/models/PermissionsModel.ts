@@ -1,11 +1,11 @@
-import { Schema, model, Document } from "mongoose";
+import { Schema, model, Document } from "mongoose"
 
 interface IPermission extends Document {
-  name: string;
-  createdAt: Date;
-  createdByUser: string;
-  description: string;
-  key: string;
+  name: string
+  createdAt: Date
+  createdByUser: string
+  description: string
+  key: string
 }
 
 const PermissionSchema = new Schema<IPermission>({
@@ -14,6 +14,6 @@ const PermissionSchema = new Schema<IPermission>({
   createdByUser: { type: String, required: true },
   description: { type: String, required: true },
   key: { type: String, required: true },
-});
+})
 
-export default model<IPermission>("Permission", PermissionSchema);
+export default model<IPermission>("Permission", PermissionSchema)
