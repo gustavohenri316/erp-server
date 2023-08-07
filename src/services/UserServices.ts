@@ -141,3 +141,66 @@ export const findUserByEmail = async (email: string) => {
   const user = await User.findOne({ email })
   return user
 }
+
+// No serviço UserServices
+export const findUsersBySearch = async (
+  search: string,
+  page: number,
+  pageSize: number
+) => {
+  const regex = new RegExp(`.*${search}.*`, "i")
+
+  // Search by name, email, telephone, or team
+  const totalItems = await User.countDocuments({
+    $or: [
+      { firstName: regex },
+      { lastName: regex },
+      { email: regex },
+      { phoneNumber: regex },
+      { team: regex },
+    ],
+  })
+
+  const users = await User.find({
+    $or: [
+      { firstName: regex },
+      { lastName: regex },
+      { email: regex },
+      { phoneNumber: regex },
+      { team: regex },
+    ],
+  })
+    .populate("privileges")
+    .skip((page - 1) * pageSize)
+    .limit(pageSize)
+
+  const usersWithoutPassword = users.map((user) => {
+    const {
+      photo,
+      firstName,
+      lastName,
+      email,
+      privileges,
+      phoneNumber,
+      team,
+      _id,
+    } = user.toObject()
+    return {
+      photo,
+      firstName,
+      lastName,
+      email,
+      privileges,
+      phoneNumber,
+      team,
+      _id,
+    }
+  })
+
+  return {
+    totalItems,
+    currentPage: page,
+    pageSize,
+    users: usersWithoutPassword,
+  }
+}

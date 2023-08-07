@@ -82,32 +82,32 @@ export async function updateUserPasswordController(
   }
 }
 
+// No controlador searchUsers
+// No controlador searchUsers
 export async function searchUsers(req: Request, res: Response) {
   try {
-    const name: any = req.query.name
-    const id: any = req.query.id
+    const search = req.query.search as string
     const page: number = req.query.page ? parseInt(req.query.page as string) : 1
     const pageSize: number = req.query.pageSize
       ? parseInt(req.query.pageSize as string)
       : 10
 
-    let user
-
-    if (name) {
-      user = await UserService.findUserByName(name)
-    } else if (id) {
-      user = await UserService.findUserById(id)
-    } else {
+    if (!search) {
       const userList: any = await UserService.listUsers(page, pageSize)
-
       return res.send(userList)
     }
 
-    if (!user) {
-      return res.status(404).send({ message: "Usuário não encontrado" })
+    const searchResult = await UserService.findUsersBySearch(
+      search,
+      page,
+      pageSize
+    )
+
+    if (!searchResult.users || searchResult.users.length === 0) {
+      return res.status(404).send({ message: "Usuários não encontrados" })
     }
 
-    res.send({ user })
+    res.send(searchResult)
   } catch (error: any) {
     res.status(400).send(error)
   }
