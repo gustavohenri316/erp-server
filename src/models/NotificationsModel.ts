@@ -11,6 +11,12 @@ export interface INotification extends Document {
   isGlobal: boolean
   excludedFor?: mongoose.Types.ObjectId[]
   readBy?: mongoose.Types.ObjectId[]
+  sentByInfo: {
+    firstName: string
+    lastName: string
+    photo: string
+    email: string
+  }
 }
 
 const notificationSchema = new Schema<INotification>({
@@ -24,6 +30,12 @@ const notificationSchema = new Schema<INotification>({
   isGlobal: { type: Boolean, default: false },
   excludedFor: [{ type: mongoose.Schema.Types.ObjectId, ref: "User" }],
   readBy: [{ type: mongoose.Schema.Types.ObjectId, ref: "User" }],
+  sentByInfo: {
+    firstName: String,
+    lastName: String,
+    photo: String,
+    email: String,
+  },
 })
 
 const Notification = mongoose.model<INotification>(

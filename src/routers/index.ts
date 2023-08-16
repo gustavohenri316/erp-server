@@ -31,10 +31,23 @@ router.post(
   ],
   NotificationsController.sendNotification
 )
-router.get(
-  "/notifications/:userId",
-  NotificationsController.getNotificationsByUserId
-)
+router.get("/notifications/:userId", async (req, res) => {
+  const { userId } = req.params
+  const page = parseInt(req.query.page as string) || 1
+  const perPage = parseInt(req.query.perPage as string) || 8
+
+  try {
+    const notifications = await NotificationsController.getNotifications(
+      userId,
+      page,
+      perPage
+    )
+    res.send(notifications)
+  } catch (error: any) {
+    res.status(error.status || 400).send({ message: error.message })
+  }
+})
+
 router.get(
   "/notifications/sent/:userId",
   NotificationsController.getSentNotificationsByUserId

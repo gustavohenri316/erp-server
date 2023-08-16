@@ -1,5 +1,7 @@
 import Notification, { INotification } from "../models/NotificationsModel"
+import UserModel from "../models/UserModels"
 import { Types } from "mongoose"
+
 export const createNotification = async (
   receivedBy: string[] | Types.ObjectId[],
   message: string,
@@ -7,11 +9,22 @@ export const createNotification = async (
   sentBy: string,
   isGlobal: boolean
 ): Promise<INotification> => {
+  const sender = await UserModel.findById(
+    sentBy,
+    "firstName lastName photo email"
+  )
   const notification: INotification = await Notification.create({
     receivedBy,
     message,
     title,
     sentBy,
+    sentByInfo: {
+      firstName: sender?.firstName || "",
+      lastName: sender?.lastName || "",
+      photo: sender?.photo || "",
+      email: sender?.email || "",
+      team: sender?.team || "",
+    },
     isGlobal,
     isRead: false,
   })

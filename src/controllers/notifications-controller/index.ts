@@ -2,6 +2,7 @@ import { Request, Response } from "express"
 import { Types } from "mongoose"
 import * as NotificationServices from "../../services/NotificationServices"
 import { findUserById } from "../../services/UserServices"
+import Notification from "../../models/NotificationsModel"
 
 export const sendNotification = async (req: Request, res: Response) => {
   try {
@@ -30,29 +31,59 @@ export const sendNotification = async (req: Request, res: Response) => {
   }
 }
 
-export const getNotificationsByUserId = async (req: Request, res: Response) => {
-  try {
-    const { userId } = req.params
-    const user = await findUserById(userId)
-    if (!user) {
-      return res.status(404).send({ message: "Usuário não encontrado." })
-    }
-    const page = parseInt(req.query.page as string) || 1
-    const perPage = parseInt(req.query.perPage as string) || 8
-    const {
-      directNotifications,
-      globalNotifications,
-      directNotificationsCount,
-      globalNotificationsCount,
-    } = await NotificationServices.getNotifications(userId, page, perPage)
-    res.send({
-      directNotifications,
-      globalNotifications,
-      globalNotificationsCount,
-      directNotificationsCount,
-    })
-  } catch (error: any | any) {
-    res.status(error.status || 400).send({ message: error.message })
+export const getNotifications = async (
+  userId: string,
+  page: number,
+  perPage: number
+) => {
+  const skip = (page - 1) * perPage
+
+  const directNotificationsQuery = Notification.find({
+    receivedBy: { $in: [userId] },
+    isGlobal: false,
+  })
+    .sort({ createdAt: -1 })
+    .skip(skip)
+    .limit(perPage)
+    .populate("sentBy", "firstName lastName photo email team")
+    .lean()
+
+  const directNotifications = await directNotificationsQuery
+
+  const globalNotificationsQuery = Notification.find({
+    _id: { $nin: directNotifications.map((n: any) => n._id) },
+    isGlobal: true,
+    excludedFor: { $ne: userId },
+    readBy: { $ne: userId },
+  })
+    .sort({ createdAt: -1 })
+    .skip(skip)
+    .limit(perPage)
+    .populate("sentBy", "firstName lastName photo email team")
+    .lean()
+
+  const globalNotifications = await globalNotificationsQuery
+
+  // Obtenha o número total de documentos usando .countDocuments()
+  const directNotificationsTotal = await Notification.countDocuments({
+    receivedBy: { $in: [userId] },
+    isGlobal: false,
+  })
+
+  const globalNotificationsTotal = await Notification.countDocuments({
+    _id: {
+      $nin: directNotifications.map((n) => n._id),
+    },
+    isGlobal: true,
+    excludedFor: { $ne: userId },
+    readBy: { $ne: userId },
+  })
+
+  return {
+    directNotifications,
+    globalNotifications,
+    globalNotificationsCount: globalNotificationsTotal,
+    directNotificationsCount: directNotificationsTotal,
   }
 }
 
