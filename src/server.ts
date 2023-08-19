@@ -8,7 +8,7 @@ import { dbConnection } from "./utils/database"
 const main = async () => {
   config()
   const app = express()
-  const port = process.env.PORT || 3333
+  const port = 3333
   await dbConnection()
   app.use(express.json())
   app.use(cors())
