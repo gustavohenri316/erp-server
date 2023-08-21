@@ -55,7 +55,7 @@ export async function getUserProfile(req: Request, res: Response) {
     res.status(200).send({
       name,
       photo: user.photo,
-      email: user.corporateEmail,
+      email: user.email,
       id: user._id,
     })
   } catch (error: any) {
