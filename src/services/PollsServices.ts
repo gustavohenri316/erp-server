@@ -35,13 +35,11 @@ export async function listPolls(
     const query: any = {}
     if (filter) {
       query.$or = [
-        { title: { $regex: filter, $options: "i" } }, // Case-insensitive title search
-        { createdByName: { $regex: filter, $options: "i" } }, // Case-insensitive creator search
+        { title: { $regex: filter, $options: "i" } },
+        { createdByName: { $regex: filter, $options: "i" } },
       ]
     }
-
     const totalCount = await Polls.countDocuments(query)
-
     const polls = await Polls.find(query)
       .skip((page - 1) * pageSize)
       .limit(pageSize)

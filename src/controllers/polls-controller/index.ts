@@ -38,7 +38,14 @@ export async function listPolls(req: Request, res: Response) {
       parsedFilter
     )
 
-    return res.status(200).json({ polls, totalCount })
+    const totalPages = Math.ceil(totalCount / parsedPageSize)
+    return res.status(200).json({
+      polls,
+      totalCount,
+      currentPage: parsedPage,
+      pageSize: parsedPageSize,
+      totalPages: totalPages,
+    })
   } catch (error) {
     console.error("Error listing polls:", error)
     return res.status(500).json({ error: "Failed to list polls" })

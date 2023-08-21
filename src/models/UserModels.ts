@@ -23,9 +23,8 @@ const UserSchema = new Schema({
   salary: { type: String },
   employmentType: { type: String },
   username: { type: String, required: true, unique: true },
-  corporateEmail: { type: String, required: true, unique: true },
+  corporateEmail: { type: String, required: false, unique: true },
   password: { type: String, required: true },
-  team: { type: String, required: true },
   privileges: [{ type: Schema.Types.ObjectId, ref: "Privileges" }],
 })
 

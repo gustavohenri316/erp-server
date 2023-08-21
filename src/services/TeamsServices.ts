@@ -13,12 +13,17 @@ export async function createTeam(
 export async function listTeams(
   page: number,
   pageSize: number
-): Promise<{ total: number; teams: ITeamsDocument[] }> {
+): Promise<{
+  total: number
+  pageSize: number
+  page: number
+  teams: ITeamsDocument[]
+}> {
   try {
     const total = await TeamsModel.countDocuments()
     const skipAmount = (page - 1) * pageSize
     const teams = await TeamsModel.find().skip(skipAmount).limit(pageSize)
-    return { total, teams }
+    return { total, pageSize, page, teams }
   } catch (error) {
     throw new Error("Failed to list teams")
   }

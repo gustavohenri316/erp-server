@@ -1,16 +1,22 @@
 import User from "../models/UserModels"
 import Privileges from "../models/PrivilegesModels"
 import Permission from "../models/PermissionsModel"
+
 export const findUserByEmailAndPassword = async (
-  email: string,
+  identifier: string,
   password: string
 ) => {
-  const user = await User.findOne({ email, password })
+  const user = await User.findOne({
+    $or: [{ email: identifier }, { username: identifier }],
+    password: password,
+  })
   return user
 }
+
 export const updateUserPassword = async (id: string, newPassword: string) => {
   await User.findByIdAndUpdate(id, { password: newPassword })
 }
+
 export const listUsers = async (page: number = 1, pageSize: number = 10) => {
   const totalItems = await User.countDocuments()
   const users = await User.find()
@@ -19,16 +25,8 @@ export const listUsers = async (page: number = 1, pageSize: number = 10) => {
     .limit(pageSize)
 
   const usersWithoutPassword = users.map((user) => {
-    const {
-      photo,
-      firstName,
-      lastName,
-      email,
-      privileges,
-      phoneNumber,
-      team,
-      _id,
-    } = user.toObject()
+    const { photo, firstName, lastName, email, privileges, phoneNumber, _id } =
+      user.toObject()
     return {
       photo,
       firstName,
@@ -36,7 +34,6 @@ export const listUsers = async (page: number = 1, pageSize: number = 10) => {
       email,
       privileges,
       phoneNumber,
-      team,
       _id,
     }
   })
@@ -142,22 +139,18 @@ export const findUserByEmail = async (email: string) => {
   return user
 }
 
-// No serviço UserServices
 export const findUsersBySearch = async (
   search: string,
   page: number,
   pageSize: number
 ) => {
   const regex = new RegExp(`.*${search}.*`, "i")
-
-  // Search by name, email, telephone, or team
   const totalItems = await User.countDocuments({
     $or: [
       { firstName: regex },
       { lastName: regex },
       { email: regex },
       { phoneNumber: regex },
-      { team: regex },
     ],
   })
 
@@ -167,7 +160,6 @@ export const findUsersBySearch = async (
       { lastName: regex },
       { email: regex },
       { phoneNumber: regex },
-      { team: regex },
     ],
   })
     .populate("privileges")
@@ -175,16 +167,8 @@ export const findUsersBySearch = async (
     .limit(pageSize)
 
   const usersWithoutPassword = users.map((user) => {
-    const {
-      photo,
-      firstName,
-      lastName,
-      email,
-      privileges,
-      phoneNumber,
-      team,
-      _id,
-    } = user.toObject()
+    const { photo, firstName, lastName, email, privileges, phoneNumber, _id } =
+      user.toObject()
     return {
       photo,
       firstName,
@@ -192,7 +176,6 @@ export const findUsersBySearch = async (
       email,
       privileges,
       phoneNumber,
-      team,
       _id,
     }
   })

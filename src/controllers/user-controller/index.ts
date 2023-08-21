@@ -4,25 +4,27 @@ import { defaultPhotoURL } from "../../assets/data"
 
 export async function loginUser(req: Request, res: Response) {
   try {
-    const { email, password } = req.body
-
-    if (!email || !password) {
+    const { identifier, password } = req.body
+    if (!identifier || !password) {
       return res
         .status(400)
-        .send({ message: "E-mail e senha são obrigatórios" })
+        .send({ message: "E-mail/username e senha são obrigatórios" })
     }
-
-    const user = await UserService.findUserByEmailAndPassword(email, password)
+    const user = await UserService.findUserByEmailAndPassword(
+      identifier,
+      password
+    )
     const privileges: any = await UserService.getUserPrivilegeAndPermissions(
       user._id
     )
-
     const permissions = privileges.permissionsAssociated.map(
       (permission: any) => permission.key
     )
 
     if (!user) {
-      return res.status(404).send({ message: "E-mail ou senha inválidos" })
+      return res
+        .status(404)
+        .send({ message: "E-mail/username ou senha inválidos" })
     }
 
     res.send({
@@ -82,8 +84,6 @@ export async function updateUserPasswordController(
   }
 }
 
-// No controlador searchUsers
-// No controlador searchUsers
 export async function searchUsers(req: Request, res: Response) {
   try {
     const search = req.query.search as string
@@ -116,12 +116,6 @@ export async function searchUsers(req: Request, res: Response) {
 export async function createUserController(req: Request, res: Response) {
   try {
     const userData = req.body
-
-    if (!userData.corporateEmail) {
-      return res
-        .status(400)
-        .send({ message: "E-mail corporativo é obrigatório." })
-    }
 
     if (!userData.username) {
       return res.status(400).send({ message: "Nome de usuário é obrigatório." })

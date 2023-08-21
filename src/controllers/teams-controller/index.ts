@@ -25,13 +25,12 @@ export async function listTeams(req: Request, res: Response) {
     const pageSize = parseInt(req.query.pageSize as string) || 10
 
     const { total, teams } = await TeamsServices.listTeams(page, pageSize)
-    return res.status(200).json({ total, teams })
+    return res.status(200).json({ total, pageSize, page, teams })
   } catch (error) {
     console.error("Error listing teams:", error)
     return res.status(500).json({ error: "Failed to list teams" })
   }
 }
-
 export async function getTeamById(req: Request, res: Response) {
   try {
     const { id } = req.params
