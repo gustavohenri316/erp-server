@@ -5,7 +5,7 @@ import { IFeedback, IPolls } from "../../models/PollsModels"
 export async function createPoll(req: Request, res: Response) {
   try {
     const newPoll: IPolls = req.body
-    const createdPoll = await PollsServices.createPoll(newPoll)
+    await PollsServices.createPoll(newPoll)
     return res.status(201).json({ message: "Enquete criada com sucesso!" })
   } catch (error) {
     console.error("Error creating poll:", error)
@@ -79,21 +79,27 @@ export async function getPollById(req: Request, res: Response) {
   try {
     const pollId: string = req.params.pollId
     const poll = await PollsServices.getPollById(pollId)
+
     if (!poll) {
       return res.status(404).json({ error: "Poll not found" })
     }
+    const isPrivate: boolean = req.query.isPrivate === "true"
+    const isFeedbackPublic: boolean = poll.isFeedbackPublic
+
+    if (!isPrivate && !isFeedbackPublic) {
+      poll.feedbacks = []
+    }
+
     return res.status(200).json(poll)
   } catch (error) {
     console.error("Error fetching poll by ID:", error)
     return res.status(500).json({ error: "Failed to fetch poll by ID" })
   }
 }
-
 export async function deleteFeedback(req: Request, res: Response) {
   try {
     const pollId: string = req.params.pollId
     const feedbackId: string = req.params.feedbackId
-
     await PollsServices.deleteFeedbackFromPoll(pollId, feedbackId)
     return res.status(204).send({ message: "Feedback deletado com sucesso!" })
   } catch (error) {

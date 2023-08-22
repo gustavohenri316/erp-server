@@ -14,8 +14,7 @@ export interface IPolls {
   createdByName: string
   createdByEmail: string
   createdByAvatar: string
-  feedbackType: string
-  scaleType: string | null
+  isFeedbackPublic: boolean
   createdAt: Date
   description: string
   feedbacks: IFeedback[]
@@ -26,7 +25,7 @@ export interface IPollsDocument extends IPolls, Document {}
 const FeedbackSchema = new Schema<IFeedback>({
   name: { type: String, required: true },
   email: { type: String, required: true },
-  feedbackMessage: { type: String, required: true },
+  feedbackMessage: { type: String, required: false },
   assessment: { type: Number, required: true },
   createdAt: { type: Date, default: Date.now, required: true },
 })
@@ -36,8 +35,7 @@ const PollsSchema = new Schema<IPolls>({
   createdByAvatar: { type: String, required: true },
   createdByName: { type: String, required: true },
   createdByEmail: { type: String, required: true },
-  feedbackType: { type: String, required: true },
-  scaleType: { type: String, required: false },
+  isFeedbackPublic: { type: Boolean, required: true },
   createdAt: { type: Date, default: Date.now, required: true },
   description: { type: String, required: true },
   feedbacks: [FeedbackSchema],
