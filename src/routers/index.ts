@@ -111,14 +111,14 @@ router.get("/teams/:id", TeamsController.getTeamById)
 router.put("/teams/:id", TeamsController.updateTeam)
 router.delete("/teams/:id", TeamsController.deleteTeam)
 
-router.post("/polls", PollsController.createPoll)
+router.post("/polls/:userId", PollsController.createPoll)
 router.post("/polls/add-feedback/:pollId", PollsController.addFeedback)
-router.get("/polls", PollsController.listPolls)
-router.get("/polls/:pollId", PollsController.getPollById)
+router.get("/polls/:userId", PollsController.listPolls)
+router.get("/polls/:userId/:pollId", PollsController.getPollById)
 router.put("/polls/:pollId", PollsController.editPoll)
-router.delete("/polls/:pollId", PollsController.deletePoll)
+router.delete("/polls/:userId/:pollId", PollsController.deletePoll)
 router.delete(
-  "/polls/:pollId/feedbacks/:feedbackId",
+  "/polls/:userId/:pollId/feedbacks/:feedbackId",
   PollsController.deleteFeedback
 )
 

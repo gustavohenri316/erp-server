@@ -1,6 +1,8 @@
 import { Request, Response } from "express"
 import * as UserService from "../../services/UserServices"
 import { defaultPhotoURL } from "../../assets/data"
+import Permission, { IPermission } from "../../models/PermissionsModel"
+import Privileges from "../../models/PrivilegesModels"
 
 export async function loginUser(req: Request, res: Response) {
   try {
@@ -45,18 +47,33 @@ export async function loginUser(req: Request, res: Response) {
 export async function getUserProfile(req: Request, res: Response) {
   try {
     const { userId } = req.params
-    const user = await UserService.findUserById(userId)
+    const user: any | null = await UserService.findUserById(userId)
 
     if (!user) {
       return res.status(404).send({ message: "Usuário não encontrado" })
     }
 
     const name = `${user.firstName} ${user.lastName}`
+
+    const permissions: string[] = []
+    for (const privilege of user.privileges) {
+      const privilegeObject = await Privileges.findById(privilege._id).populate(
+        "permissions"
+      )
+      if (privilegeObject) {
+        const permissionKeys = privilegeObject.permissions.map(
+          (permission: any) => permission.key
+        )
+        permissions.push(...permissionKeys)
+      }
+    }
+
     res.status(200).send({
       name,
       photo: user.photo,
       email: user.email,
       id: user._id,
+      permissions,
     })
   } catch (error: any) {
     res.status(400).send(error)

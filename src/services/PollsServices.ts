@@ -37,6 +37,7 @@ export async function listPolls(
       query.$or = [
         { title: { $regex: filter, $options: "i" } },
         { createdByName: { $regex: filter, $options: "i" } },
+        { createdByEmail: { $regex: filter, $options: "i" } },
       ]
     }
     const totalCount = await Polls.countDocuments(query)
