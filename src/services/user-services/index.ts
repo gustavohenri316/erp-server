@@ -1,3 +1,4 @@
+/* eslint-disable prefer-const */
 import User from "../../models/user-models"
 import Privileges from "../../models/privileges-models"
 import Permission from "../../models/permissions-models"
@@ -134,32 +135,29 @@ export const getAllUsers = async () => {
   return users
 }
 
-export const findUserByEmail = async (email: string) => {
-  const user = await User.findOne({ email })
-  return user
-}
-
 export const findUsersBySearch = async (
   search: string,
   page: number,
   pageSize: number
 ) => {
-  const regex = new RegExp(`.*${search}.*`, "i")
+  const searchWords = search.split(" ").filter((word) => word.length > 0)
+  const regexConditions = searchWords.map((word) => new RegExp(word, "i"))
+
   const totalItems = await User.countDocuments({
     $or: [
-      { firstName: regex },
-      { lastName: regex },
-      { email: regex },
-      { phoneNumber: regex },
+      { firstName: { $in: regexConditions } },
+      { lastName: { $in: regexConditions } },
+      { email: { $in: regexConditions } },
+      { phoneNumber: { $in: regexConditions } },
     ],
   })
 
   const users = await User.find({
     $or: [
-      { firstName: regex },
-      { lastName: regex },
-      { email: regex },
-      { phoneNumber: regex },
+      { firstName: { $in: regexConditions } },
+      { lastName: { $in: regexConditions } },
+      { email: { $in: regexConditions } },
+      { phoneNumber: { $in: regexConditions } },
     ],
   })
     .populate("privileges")

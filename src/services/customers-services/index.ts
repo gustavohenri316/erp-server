@@ -9,7 +9,30 @@ export const getAllCustomers = async () => {
   return await CustomersModel.find()
 }
 export const getCustomerById = async (customerId: string) => {
-  return await CustomersModel.findById(customerId)
+  try {
+    const customer: any | null = await CustomersModel.findById(
+      customerId
+    ).lean()
+    if (!customer) {
+      return null
+    }
+
+    const responsible: any | null = await UserModel.findById(
+      customer.responsible
+    ).lean()
+    const responsibleName = responsible
+      ? `${responsible.firstName} ${responsible.lastName}`
+      : "N/A"
+
+    const customerWithResponsibleName = {
+      ...customer,
+      responsibleName,
+    }
+
+    return customerWithResponsibleName
+  } catch (error) {
+    throw new Error("Could not fetch customer with responsible name.")
+  }
 }
 export const updateCustomer = async (
   customerId: string,

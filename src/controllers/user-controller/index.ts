@@ -2,6 +2,7 @@ import { Request, Response } from "express"
 import * as UserService from "../../services/user-services"
 import { defaultPhotoURL } from "../../assets/data"
 import Privileges from "../../models/privileges-models"
+import mongoose from "mongoose"
 
 export async function loginUser(req: Request, res: Response) {
   try {
@@ -112,17 +113,15 @@ export async function searchUsers(req: Request, res: Response) {
       const userList: any = await UserService.listUsers(page, pageSize)
       return res.send(userList)
     }
-
-    const searchResult = await UserService.findUsersBySearch(
-      search,
-      page,
-      pageSize
-    )
-
+    let searchResult: any
+    if (mongoose.isValidObjectId(search)) {
+      searchResult = await UserService.findUserById(search)
+    } else {
+      searchResult = await UserService.findUsersBySearch(search, page, pageSize)
+    }
     if (!searchResult.users || searchResult.users.length === 0) {
       return res.status(404).send({ message: "Usuários não encontrados" })
     }
-
     res.send(searchResult)
   } catch (error: any) {
     res.status(400).send(error)
