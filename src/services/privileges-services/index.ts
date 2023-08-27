@@ -1,8 +1,8 @@
 import Privileges, {
   IPrivileges,
   IPrivilegesDocument,
-} from "../models/PrivilegesModels"
-import Permission from "../models/PermissionsModel"
+} from "../../models/privileges-models"
+import Permission from "../../models/permissions-models"
 import { Schema } from "mongoose"
 
 export const createPrivilege = async (

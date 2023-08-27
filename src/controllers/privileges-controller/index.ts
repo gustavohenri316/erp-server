@@ -1,5 +1,5 @@
 import { Request, Response } from "express"
-import * as PrivilegesServices from "../../services/PrivilegesServices"
+import * as PrivilegesServices from "../../services/privileges-services"
 
 // Function to create a new privilege
 export async function createPrivilege(req: Request, res: Response) {

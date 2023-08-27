@@ -1,5 +1,5 @@
-import User from "../models/UserModels"
-import Privileges from "../models/PrivilegesModels"
+import User from "../models/user-models"
+import Privileges from "../models/privileges-models"
 
 export async function checkPermission(
   userId: string,

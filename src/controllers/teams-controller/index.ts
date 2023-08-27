@@ -1,6 +1,6 @@
 import { Request, Response } from "express"
-import * as TeamsServices from "../../services/TeamsServices"
-import { ITeamsDocument } from "../../models/TeamsModels"
+import * as TeamsServices from "../../services/teams-services"
+import { ITeamsDocument } from "../../models/teams-models"
 
 export async function createTeam(req: Request, res: Response) {
   try {

@@ -3,8 +3,8 @@ import {
   createPermission,
   deletePermissionById,
   listPermissions,
-} from "../../services/PermissionsServices"
-import Permission from "../../models/PermissionsModel"
+} from "../../services/permission-services"
+import Permission from "../../models/permissions-models"
 const router = Router()
 
 export async function createPermissionController(req: Request, res: Response) {
@@ -26,7 +26,6 @@ export async function createPermissionController(req: Request, res: Response) {
     })
   }
 }
-// Rota para excluir uma permissão por ID
 export async function deletePermissionByIdController(
   req: Request,
   res: Response
@@ -39,8 +38,6 @@ export async function deletePermissionByIdController(
     res.status(400).send({ success: false, message: error.message })
   }
 }
-
-// Rota para listar todas as permissões
 export async function listPermissionsController(req: Request, res: Response) {
   try {
     const permissions = await listPermissions()
@@ -101,8 +98,6 @@ export async function searchPermissionsController(req: Request, res: Response) {
     res.status(400).send({ success: false, message: error.message })
   }
 }
-
-// Rota para pesquisar uma permissão pelo nome
 export async function searchPermissionByNameController(
   req: Request,
   res: Response

@@ -9,6 +9,7 @@ import * as PrivilegesController from "../controllers/privileges-controller"
 import * as UsersController from "../controllers/user-controller"
 import * as TeamsController from "../controllers/teams-controller"
 import * as PollsController from "../controllers/polls-controller"
+import * as CustomersController from "../controllers/customers-controller"
 
 const router = Router()
 
@@ -66,7 +67,7 @@ router.get(
   NotificationsController.getUnreadNotificationCountByUserId
 )
 
-// Permission routes
+// Permission
 router.post("/permission/", PermissionsController.createPermissionController)
 router.delete(
   "/permission/:permissionId",
@@ -82,14 +83,14 @@ router.get(
   PermissionsController.searchPermissionByNameController
 )
 
-// Privilege routes
+// Privilege
 router.post("/privileges/", PrivilegesController.createPrivilege)
 router.get("/privileges", PrivilegesController.listPrivileges)
 router.put("/privileges/:id", PrivilegesController.updatePrivilege)
 router.delete("/privileges/:id", PrivilegesController.deletePrivilege)
 router.get("/privileges/:id", PrivilegesController.getPrivilegeById)
 
-// User routes
+// User
 router.post("/user/login", UsersController.loginUser)
 router.get("/user/:userId/profile", UsersController.getUserProfile)
 router.patch(
@@ -104,12 +105,15 @@ router.get("/user/:userId", UsersController.getUserById)
 router.get("/user/:userId/privilege", UsersController.getUserPrivileges)
 router.get("/user/:userId/permission-key", UsersController.getUserPermissionKey)
 
+// Teams
 router.post("/teams", TeamsController.createTeam)
 router.post("/teams", TeamsController.createTeam)
 router.get("/teams", TeamsController.listTeams)
 router.get("/teams/:id", TeamsController.getTeamById)
 router.put("/teams/:id", TeamsController.updateTeam)
 router.delete("/teams/:id", TeamsController.deleteTeam)
+
+// Polls
 
 router.post("/polls/:userId", PollsController.createPoll)
 router.post("/polls/add-feedback/:pollId", PollsController.addFeedback)
@@ -121,5 +125,13 @@ router.delete(
   "/polls/:userId/:pollId/feedbacks/:feedbackId",
   PollsController.deleteFeedback
 )
+
+// Customers
+
+router.post("/customers", CustomersController.createCustomer)
+router.get("/customers", CustomersController.getAllCustomers)
+router.get("/customers/:id", CustomersController.getCustomerById)
+router.put("/customers/:id", CustomersController.updateCustomer)
+router.delete("/customers/:id", CustomersController.deleteCustomer)
 
 export default router

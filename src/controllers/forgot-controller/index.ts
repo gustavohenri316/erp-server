@@ -1,5 +1,5 @@
 import { Request, Response } from "express"
-import { createForgot, getForgotUserId } from "../../services/ForgotServices"
+import { createForgot, getForgotUserId } from "../../services/forgot-services"
 import { validationResult } from "express-validator"
 
 export const generateCode = async (req: Request, res: Response) => {

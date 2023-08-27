@@ -1,4 +1,4 @@
-import Permission from "../models/PermissionsModel"
+import Permission from "../../models/permissions-models"
 export const createPermission = async (PermissionData: any) => {
   const existingPermissionWithName = await Permission.findOne({
     name: PermissionData.name,

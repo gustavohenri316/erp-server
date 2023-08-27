@@ -1,6 +1,6 @@
-import User from "../models/UserModels"
-import Privileges from "../models/PrivilegesModels"
-import Permission from "../models/PermissionsModel"
+import User from "../../models/user-models"
+import Privileges from "../../models/privileges-models"
+import Permission from "../../models/permissions-models"
 
 export const findUserByEmailAndPassword = async (
   identifier: string,

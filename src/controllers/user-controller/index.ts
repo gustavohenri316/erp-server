@@ -1,8 +1,7 @@
 import { Request, Response } from "express"
-import * as UserService from "../../services/UserServices"
+import * as UserService from "../../services/user-services"
 import { defaultPhotoURL } from "../../assets/data"
-import Permission, { IPermission } from "../../models/PermissionsModel"
-import Privileges from "../../models/PrivilegesModels"
+import Privileges from "../../models/privileges-models"
 
 export async function loginUser(req: Request, res: Response) {
   try {

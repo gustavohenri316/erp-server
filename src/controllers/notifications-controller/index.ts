@@ -1,8 +1,8 @@
 import { Request, Response } from "express"
 import { Types } from "mongoose"
-import * as NotificationServices from "../../services/NotificationServices"
-import { findUserById } from "../../services/UserServices"
-import Notification from "../../models/NotificationsModel"
+import * as NotificationServices from "../../services/notification-services"
+import { findUserById } from "../../services/user-services"
+import Notification from "../../models/notifications-models"
 
 export const sendNotification = async (req: Request, res: Response) => {
   try {

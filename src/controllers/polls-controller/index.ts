@@ -1,6 +1,6 @@
 import { Request, Response } from "express"
-import * as PollsServices from "../../services/PollsServices"
-import { IFeedback, IPolls } from "../../models/PollsModels"
+import * as PollsServices from "../../services/polls-services"
+import { IFeedback, IPolls } from "../../models/polls-models"
 import { checkPermission } from "../../utils/permissions"
 
 async function checkAndProceed(

@@ -1,6 +1,10 @@
 /* eslint-disable no-useless-catch */
 
-import Polls, { IFeedback, IPolls, IPollsDocument } from "../models/PollsModels"
+import Polls, {
+  IFeedback,
+  IPolls,
+  IPollsDocument,
+} from "../../models/polls-models"
 
 export async function createPoll(newPoll: IPolls) {
   try {

@@ -1,5 +1,5 @@
-import Forgot, { IForgot } from "../models/ForgotModels"
-import User from "../models/UserModels"
+import Forgot, { IForgot } from "../../models/forgot-models"
+import User from "../../models/user-models"
 import nodemailer from "nodemailer"
 
 const generateRandomCode = (): string => {

@@ -1,4 +1,4 @@
-import TeamsModel, { ITeamsDocument } from "../models/TeamsModels"
+import TeamsModel, { ITeamsDocument } from "../../models/teams-models"
 
 export async function createTeam(
   teamData: Partial<ITeamsDocument>

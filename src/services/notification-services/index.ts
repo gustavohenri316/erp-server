@@ -1,5 +1,5 @@
-import Notification, { INotification } from "../models/NotificationsModel"
-import UserModel from "../models/UserModels"
+import Notification, { INotification } from "../../models/notifications-models"
+import UserModel from "../../models/user-models"
 import { Types } from "mongoose"
 
 export const createNotification = async (
