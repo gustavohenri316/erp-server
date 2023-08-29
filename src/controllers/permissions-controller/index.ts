@@ -19,7 +19,6 @@ export async function createPermissionController(req: Request, res: Response) {
         .send({ success: true, message: result.message, data: result.data })
     }
   } catch (error: any) {
-    console.error("Error creating a new permission:", error.message)
     res.status(500).send({
       success: false,
       message: "Error creating the permission. Please check the server.",
