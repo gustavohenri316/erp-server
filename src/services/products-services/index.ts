@@ -20,23 +20,21 @@ export async function getProducts(
 }
 
 export async function searchProducts(
-  query: string,
+  filter: any,
   page: number,
   pageSize: number
 ): Promise<IProduct[]> {
-  const searchRegex = new RegExp(query, "i")
-  const products = await Product.find({
-    $or: [
-      { description: searchRegex },
-      { code: searchRegex },
-      { ean: searchRegex },
-    ],
-  })
+  const products = await Product.find(filter)
     .populate("supplier", "corporateReason")
     .skip((page - 1) * pageSize)
     .limit(pageSize)
   return products
 }
+
+export async function getProductCount(filter: any = {}): Promise<number> {
+  return Product.countDocuments(filter).exec()
+}
+
 export async function updateProduct(
   productId: string,
   updateData: Partial<IProduct>

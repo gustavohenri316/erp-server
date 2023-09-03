@@ -35,6 +35,5 @@ POST   {{baseUrl}}/products
   }
 }
 ### list proucts
-GET {{baseUrl}}/products/
+GET {{baseUrl}}/products?query=&supplie=64f0a5bd8669d873788b76d6
 
-### update proucts

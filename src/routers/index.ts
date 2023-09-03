@@ -138,8 +138,7 @@ router.delete("/customers/:id", CustomersController.deleteCustomer)
 // Products
 
 router.post("/products", ProductsController.createProduct)
-router.get("/products", ProductsController.getProducts)
-router.get("/products/search", ProductsController.searchProducts)
+router.get("/products", ProductsController.searchProducts)
 router.get("/products/:id", ProductsController.getProductById)
 router.put("/products/:id", ProductsController.updateProduct)
 router.delete("/products/:id", ProductsController.deleteProduct)
