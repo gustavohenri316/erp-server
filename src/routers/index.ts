@@ -10,6 +10,7 @@ import * as UsersController from "../controllers/user-controller"
 import * as TeamsController from "../controllers/teams-controller"
 import * as PollsController from "../controllers/polls-controller"
 import * as CustomersController from "../controllers/customers-controller"
+import * as ProductsController from "../controllers/products-controller"
 
 const router = Router()
 
@@ -133,5 +134,14 @@ router.get("/customers", CustomersController.getAllCustomers)
 router.get("/customers/:id", CustomersController.getCustomerById)
 router.put("/customers/:id", CustomersController.updateCustomer)
 router.delete("/customers/:id", CustomersController.deleteCustomer)
+
+// Products
+
+router.post("/products", ProductsController.createProduct)
+router.get("/products", ProductsController.getProducts)
+router.get("/products/search", ProductsController.searchProducts)
+router.get("/products/:id", ProductsController.getProductById)
+router.put("/products/:id", ProductsController.updateProduct)
+router.delete("/products/:id", ProductsController.deleteProduct)
 
 export default router
