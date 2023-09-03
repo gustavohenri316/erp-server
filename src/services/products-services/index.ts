@@ -3,7 +3,6 @@
 import Product, { IProduct } from "../../models/products-models"
 
 export async function createProduct(productData: IProduct): Promise<IProduct> {
-  console.log(productData)
   const newProduct = new Product(productData)
   return newProduct.save()
 }
@@ -49,8 +48,6 @@ export async function deleteProduct(productId: string): Promise<void> {
 export async function getProductById(
   productId: string
 ): Promise<IProduct | null> {
-  console.log("Solicitando produto com ID:", productId)
   const product = await Product.findById(productId)
-  console.log("Produto recuperado:", product)
   return product
 }
