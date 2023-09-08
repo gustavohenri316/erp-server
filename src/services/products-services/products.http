@@ -3,36 +3,35 @@
 ### Create a new production server
 POST   {{baseUrl}}/products
 {
-  "image": "url_da_imagem",
-  "description": "Descrição do sprodus5sto",
-  "code": "CODs1243",
-  "ean": "789012s34456s789",
+  "image": "url_da_imassgem",
+  "description": "Descriçãoss do sprodus5sto",
+  "code": "CODss1243",
+  "ean": "789012ss34456s789",
   "supplier": "64f0a5bd8669d873788b76d6",
   "manufacturer": "Fabricante XYZ",
-  "quantity": 100,
+  "quantity": "125",
   "replacementUnit": "unidade",
-  "conversionFactor": 1,
+  "conversionFactor": "",
   "infoPrice": {
-    "wholesalePrice": 50.0,
-    "retailPrice": 70.0,
-    "posPrice": 60.0
+    "wholesalePrice": "50",
+    "retailPrice": "",
+    "posPrice": ""
   },
   "infoProduct": {
     "weightUnit": "kg",
-    "netWeight": 1.5,
-    "grossWeight": 2.0,
-    "shelfLife": 365,
-    "height": 10.0,
-    "width": 5.0,
-    "depth": 2.0,
-    "volume": 100.0,
-    "length": 15.0
+    "netWeight": "",
+    "grossWeight": "",
+    "shelfLife": "",
+    "height": "",
+    "width": "",
+    "depth": "",
+    "volume": "",
+    "length": ""
   },
   "infoLogistics": {
-    "layersPerPallet": 5,
-    "rowsPerPallet": 10,
-    "packagingQuantityPerPallet": 50
-  }
+    "layersPerPallet": "",
+    "rowsPerPallet": "",
+    "packagingQuantityPerPallet": ""  }
 }
 ### list proucts
 GET {{baseUrl}}/products?query=&supplie=64f0a5bd8669d873788b76d6
