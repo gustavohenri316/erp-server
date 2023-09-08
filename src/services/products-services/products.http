@@ -37,3 +37,6 @@ POST   {{baseUrl}}/products
 ### list proucts
 GET {{baseUrl}}/products?query=&supplie=64f0a5bd8669d873788b76d6
 
+### delete proucts
+
+DELETE {{baseUrl}}/products/64f47cf1460ba115c3713d93
